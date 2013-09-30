@@ -1,19 +1,24 @@
-type tile = {top : int; right: int; bottom: int; left: int}
+type tile = {
+  top : int; 
+  right: int; 
+  bottom: int; 
+  left: int
+}
 
-let rotate1 t =
+let top t = t.top
+let right t = t.right
+let bottom t = t.bottom
+let left t = t.left
+
+let rotate90deg t =
   {top = t.left; right = t.top; bottom = t.right; left = t.bottom}
 
-let rotate2 t =
-  rotate1 (rotate1 t)
-
-let rotate3 t =
-  rotate1 (rotate2 t)
-
-let match_tb t1 t2 =
-  t1.top + t2.bottom = 0
-
-let match_lr t1 t2 =
-  t1.left + t2.right = 0
+let connects s1 mt1 s2 mt2 =
+  match mt1,mt2 with
+  | None,_ -> true
+  | _,None -> true
+  | Some t1,Some t2 -> s1 t1 + s2 t2 = 0
+    
 
 (***********************************************************************
 
