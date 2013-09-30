@@ -22,27 +22,34 @@ let connects s1 mt1 s2 mt2 =
 
 (***********************************************************************
 
-            +-----+
-            |     |
-            |  A  |
-            |     |
-+-----+-----+-----+-----+
-|     |     |     |     |
-|  B  |  C  |  D  |  E  |
-|     |     |     |     |
-+-----+-----+-----+-----+
-      |     |
-      |  F  |
-      |     |
-      +-----+
+               +-----+
+               |     |
+               |  A  |
+               |     |
+   +-----+-----+-----+-----+
+   |     |     |     |     |
+   |  B  |  C  |  D  |  E  |
+   |     |     |     |     |
+   +-----+-----+-----+-----+
+         |     |
+         |  F  |
+         |     |
+         +-----+
 
 ***********************************************************************)
 
-(*
-let solution a b c d e f =
-  match_tb d a &&
-  match_lr d e &&
-  match_lr c d &&
-  match_lr b c &&
-  match_tb _
-*)
+let all = List.fold_left (&&) true
+
+let check a b c d e f = all
+  [connects right b left c;
+   connects right c left d;
+   connects right d left e;
+   connects right e left b;
+   connects top a    top b;
+   connects right a  top e;
+   connects bottom a top d;
+   connects left a   top c;
+   connects top f    bottom c;
+   connects right f  bottom d;
+   connects bottom f bottom e;
+   connects left f   bottom b]
