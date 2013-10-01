@@ -9,6 +9,7 @@ let top t = t.top
 let right t = t.right
 let bottom t = t.bottom
 let left t = t.left
+let tile t r b l = {top=t; right=r; bottom=b; left=l}
 
 let rotate90deg t =
   {top = t.left; right = t.top; bottom = t.right; left = t.bottom}
@@ -40,7 +41,7 @@ let connects s1 mt1 s2 mt2 =
 
 let all = List.fold_left (&&) true
 
-let check a b c d e f = all
+let check (a,b,c,d,e,f) = all
   [connects right b left c;
    connects right c left d;
    connects right d left e;
@@ -53,3 +54,32 @@ let check a b c d e f = all
    connects right f  bottom d;
    connects bottom f bottom e;
    connects left f   bottom b]
+
+let deref a i = 
+  try Some a.(i) with Invalid_argument _ -> None
+
+let unpack s = 
+  let a = deref s 0 in
+  let b = deref s 1 in
+  let c = deref s 2 in
+  let d = deref s 3 in
+  let e = deref s 4 in
+  let f = deref s 5 in
+  (a,b,c,d,e,f)
+
+module TileId = struct
+  type t = A | B | C | D | E | F
+  let compare = compare
+  let ids = [A;B;C;D;E;F]
+end
+
+module Solution = Map.Make (TileId)
+
+(* type 'a tree = Leaf | Node of ('a * 'a tree) list*)
+
+let rec place t s = function
+  | [] -> []
+  | p::ps ->
+    let ss = place t s ps in
+    if Solution.mem p s then ss else (Solution.add p t s) :: ss 
+
