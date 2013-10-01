@@ -105,8 +105,9 @@ let print s =
   print_endline s
 
 let rec solve tiles places current =
+  if is_solution current then
   match places with
-  | [] -> if is_solution current then print current
+  | [] -> print current
   | p::ps -> let tts = pick_one tiles in
     List.iter begin fun (t,ts) ->
       solve ts ps ((p,(t,0))::current);
