@@ -1,6 +1,6 @@
 all : puzzle.ml
-	ocamlc -o puzzle util.mli util.ml puzzle.ml
+	ocamlopt -o puzzle util.mli util.ml puzzle.ml
 
 clean : 
-	rm -rf puzzle *.cmo *.cmi
+	rm -rf puzzle *.cmo *.cmi *.o *.cmx
 

@@ -1,10 +1,10 @@
 open Util
 
 type tile = {
-  top : int; 
-  right: int; 
-  bottom: int; 
-  left: int
+  top : int option; 
+  right: int option;
+  bottom: int option;
+  left: int option
 }
 
 let top t = t.top
@@ -12,28 +12,32 @@ let right t = t.right
 let bottom t = t.bottom
 let left t = t.left
 let tile t r b l = {
-  top = t; 
+  top = t;
   right = r;
-  bottom = b; 
+  bottom = b;
   left = l
 }
 
 let rotate t = {
-  top = t.left; 
-  right = t.top; 
-  bottom = t.right; 
+  top = t.left;
+  right = t.top;
+  bottom = t.right;
   left = t.bottom
 }
 
+let l = -1
+let c = 0
+let r = 1
+
 let tiles =
   [|
-    tile 0 0 0 0;
-    tile 0 0 0 0;
-    tile (-1) 0 0 0;
-    tile 0 0 0 0;
-    tile 0 0 0 0;
-    tile 1 0 0 0;
-    tile 0 0 0 0;
+    tile None (Some c) (Some c) (Some c);
+    tile (Some c) None (Some l) (Some c);
+    tile (Some l) (Some r) None (Some r);
+    tile (Some r) (Some c) (Some l) (Some l);
+    tile (Some c) (Some c) (Some r) (Some l);
+    tile (Some c) (Some l) (Some r) (Some c);
+    tile (Some r) None (Some l) (Some r);
   |]
 
 (***********************************************************************
@@ -58,7 +62,11 @@ let connects s1 mt1 s2 mt2 =
   match mt1,mt2 with
   | None,_ -> true
   | _,None -> true
-  | Some t1,Some t2 -> s1 t1 + s2 t2 = 0
+  | Some t1,Some t2 -> 
+    match s1 t1,s2 t2 with
+    | None,None -> true
+    | Some x,Some y -> x + y = 0
+    | _,_ -> false
 
 let check a b c d e f = all
   [connects right b left c;
@@ -107,3 +115,8 @@ let rec solve tiles places current =
       solve ts ps ((p,(t,3))::current)
     end tts
 
+let () =
+  let ts = [1;2;3;4;5;6] in
+  let ps = ['B';'C';'D';'E';'F'] in
+  let init = [('A',(0,0))] in
+  solve ts ps init

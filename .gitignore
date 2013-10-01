@@ -1,3 +1,5 @@
 puzzle
 *.cmo
 *.cmi
+*.o
+*.cmx
