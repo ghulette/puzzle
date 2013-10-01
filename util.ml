@@ -10,3 +10,17 @@ let all =
 
 let any = 
   List.fold_left (||) false
+
+let rec lookup x = function
+  | [] -> None
+  | (k,v)::_ when x = k -> Some v
+  | _::ys -> lookup x ys
+
+let rec find_some = function
+  | [] -> None
+  | Some x::_ -> Some x
+  | None::xs -> find_some xs
+
+let rec repeat f x = function
+  | 0 -> x
+  | n -> repeat f (f x) (pred n);;
