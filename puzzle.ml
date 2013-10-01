@@ -1,4 +1,7 @@
+open Util
+
 type tile = {
+  rot : int;
   top : int; 
   right: int; 
   bottom: int; 
@@ -9,10 +12,21 @@ let top t = t.top
 let right t = t.right
 let bottom t = t.bottom
 let left t = t.left
-let tile t r b l = {top=t; right=r; bottom=b; left=l}
+let tile t r b l = {
+  rot = 0; 
+  top = t; 
+  right = r;
+  bottom = b; 
+  left = l
+}
 
-let rotate90deg t =
-  {top = t.left; right = t.top; bottom = t.right; left = t.bottom}
+let rotate t = {
+  rot = (t.rot + 1) mod 4; 
+  top = t.left; 
+  right = t.top; 
+  bottom = t.right; 
+  left = t.bottom
+}
 
 let connects s1 mt1 s2 mt2 =
   match mt1,mt2 with
@@ -39,8 +53,6 @@ let connects s1 mt1 s2 mt2 =
 
 ***********************************************************************)
 
-let all = List.fold_left (&&) true
-
 let check (a,b,c,d,e,f) = all
   [connects right b left c;
    connects right c left d;
@@ -55,18 +67,6 @@ let check (a,b,c,d,e,f) = all
    connects bottom f bottom e;
    connects left f   bottom b]
 
-let deref a i = 
-  try Some a.(i) with Invalid_argument _ -> None
-
-let unpack s = 
-  let a = deref s 0 in
-  let b = deref s 1 in
-  let c = deref s 2 in
-  let d = deref s 3 in
-  let e = deref s 4 in
-  let f = deref s 5 in
-  (a,b,c,d,e,f)
-
 module TileId = struct
   type t = A | B | C | D | E | F
   let compare = compare
@@ -74,8 +74,6 @@ module TileId = struct
 end
 
 module Solution = Map.Make (TileId)
-
-(* type 'a tree = Leaf | Node of ('a * 'a tree) list*)
 
 let rec place t s = function
   | [] -> []
